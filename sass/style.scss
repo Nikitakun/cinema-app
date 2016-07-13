@@ -97,6 +97,10 @@ a {
       }
    }
  }
+
+ &__app-image {
+   overflow: hidden;
+ }
 }
 
 .nav-wrapper {
