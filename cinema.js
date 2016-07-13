@@ -1,6 +1,6 @@
 'use strict';
 
-//debounce for a scroll handler
+//debounce for scroll and resize handlers
 function debounce(func, wait, immediate) {
 	var timeout;
 	return function() {
@@ -52,6 +52,7 @@ window.addEventListener('load', movingCircle.rotateCircle);
 
 //nav toggling
 var menuIcon = document.getElementsByClassName('burger-icon-wrapper')[0];
+var navScroll;
 
 function onMenuClick(e) {
   e.target.classList.toggle('burger-icon-wrapper--active');
@@ -106,14 +107,20 @@ function toggleCard(e) {
 }
 
 //making smooth scrolling to page sections
+function defineDistances() {
+	return {
+		homeDistance: Math.round(pageYOffset + document.getElementById('Home').getBoundingClientRect().top),
+	  featuresDistance: Math.round(pageYOffset + document.getElementById('Features').getBoundingClientRect().top),
+	  actionDistance: Math.round(pageYOffset + document.getElementById('In-action').getBoundingClientRect().top),
+	  pricesDistance: Math.round(pageYOffset + document.getElementById('Prices').getBoundingClientRect().top),
+	  galleryDistance: Math.round(pageYOffset + document.getElementById('Gallery').getBoundingClientRect().top)
+	}
+}
+
 function NavScroll() {
   this.links = document.getElementsByClassName('main-nav__item-link');
 
-  this.homeDistance = Math.round(pageYOffset + document.getElementById('Home').getBoundingClientRect().top);
-  this.featuresDistance = Math.round(pageYOffset + document.getElementById('Features').getBoundingClientRect().top);
-  this.actionDistance = Math.round(pageYOffset + document.getElementById('In-action').getBoundingClientRect().top);
-  this.pricesDistance = Math.round(pageYOffset + document.getElementById('Prices').getBoundingClientRect().top);
-  this.galleryDistance = Math.round(pageYOffset + document.getElementById('Gallery').getBoundingClientRect().top);
+	this.distances = defineDistances();
 }
 
 NavScroll.prototype.scrollToSection = function(evt, target) {
@@ -129,7 +136,7 @@ NavScroll.prototype.scrollToSection = function(evt, target) {
         } else if (distance < 0) {
           document.body.scrollTop -= velocity;
         }
-        if (pageYOffset >= target - 2 && pageYOffset <= target + 2) {
+        if (pageYOffset >= target - 4 && pageYOffset <= target + 4) {
           document.body.scrollTop = target;
           return;
         }
@@ -140,59 +147,28 @@ NavScroll.prototype.scrollToSection = function(evt, target) {
     });
 };
 
-var navScroll = new NavScroll();
-[].forEach.call(navScroll.links, function(item, i) {
-    switch(i) {
-      case 0:
-        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.homeDistance)});
-        break;
-      case 1:
-        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.featuresDistance)});
-        break;
-      case 2:
-        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.actionDistance)});
-        break;
-      case 3:
-        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.pricesDistance)});
-        break;
-      case 4:
-        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.galleryDistance)});
-        break;
-    }
-});
-/*
-let parentCircles = document.getElementsByClassName('download-circle');
-let parentObject = {};
-let childrenObject = {};
-[].forEach.call(parentCircles, function(item, i) {
-  parentObject[i] = {};
-  childrenObject[i] = {};
-  parentObject[i].parentCircleHeight = item.offsetHeight;
-  parentObject[i].parentCircleWidth = item.offsetWidth;
-  parentObject[i].parentCircleVerCenter = parentObject[i].parentCircleHeight / 2;
-  parentObject[i].parentCircleHorCenter = parentObject[i].parentCircleWidth / 2;
-});
-
-let childCircles = document.getElementsByClassName('download-circle-moving-item'),
-childCircle = childCircles[0],
-childCircleWidth = childCircle.offsetWidth,
-childCircleHorOffset = childCircleWidth / 4;
-
-let angle = 4.7,
-childCircleX = 0,
-childCircleY = 0,
-speed = 0.01;
-
-let parentNumber = Object.keys(parentObject);
-
-function rotateCircle() {
-  requestAnimationFrame(rotateCircle);
-  for (let key in parentObject) {
-    childCircles[key].style.transform = `translate(${childrenObject[key].childCircleX}px, ${childrenObject[key].childCircleY}px)`;
-    childrenObject[key].childCircleX = Math.cos(angle) * parentObject[key].parentCircleHorCenter - parentObject[key].parentCircleHorCenter - childCircleHorOffset;
-    childrenObject[key].childCircleY = parentObject[key].parentCircleVerCenter + Math.sin(angle) * parentObject[key].parentCircleVerCenter;
-  }
-  angle += speed;
+function prepareScrolling() {
+	navScroll = new NavScroll();
+	[].forEach.call(navScroll.links, function(item, i) {
+	    switch(i) {
+	      case 0:
+	        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.distances.homeDistance)});
+	        break;
+	      case 1:
+	        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.distances.featuresDistance)});
+	        break;
+	      case 2:
+	        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.distances.actionDistance)});
+	        break;
+	      case 3:
+	        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.distances.pricesDistance)});
+	        break;
+	      case 4:
+	        item.addEventListener('click', function(evt){return navScroll.scrollToSection(evt, navScroll.distances.galleryDistance)});
+	        break;
+	    }
+	});
 }
 
-window.addEventListener('load', rotateCircle);*/
+window.addEventListener('load', prepareScrolling);
+window.addEventListener('resize', debounce(prepareScrolling, 200));
