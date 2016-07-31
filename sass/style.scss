@@ -270,11 +270,7 @@ a {
 .main-app-image {
   margin-right: 70px;
   max-width: 100%;
-
-  @media screen and (max-width: 515px) {
-    width: 100%;
-    height: 100%;
-  }
+  height: auto;
 }
 
 .download-section {
@@ -435,6 +431,12 @@ a {
 
   &--google-play {
 
+    .mobile-button__text {
+      position: relative;
+      top: -25px;
+      left: 3px;
+    }
+
     @media screen and (min-width: round(515em/16)) {
       padding-right: 45px;
     }
@@ -462,7 +464,7 @@ a {
     left: 18px;
 
     &--google-text {
-      top: 28px;
+      top: 30px;
       left: 45px;
       width: 130px;
       transform: scale(1.2);
@@ -524,7 +526,9 @@ a {
   }
 
   &__camera-part {
-    @extend %flex;
+    position: relative;
+    margin: 0 auto;
+    max-width: 165px;
   }
 }
 
@@ -608,6 +612,7 @@ a {
   bottom: 7px;
   left: 37%;
   height: 16px;
+  width: 24px;
   background: $basic-color;
   z-index: 1;
 
@@ -622,6 +627,7 @@ a {
   &-line {
     position: relative;
     @extend %block;
+    top: -12px;
     height: 1px;
     width: 165px;
     background: #fff;
